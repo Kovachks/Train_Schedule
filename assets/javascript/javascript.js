@@ -12,13 +12,6 @@
 //----------------------Universal Variables-----------------
 var database = firebase.database();
 
-
-
-
-
-
-
-
 //--------------------------Formulas------------------
 
 database.ref().on("child_added", function(childSnapshot) {
@@ -34,7 +27,7 @@ database.ref().on("child_added", function(childSnapshot) {
 
     var minutesUntilTrain = childSnapshot.val().frequency - remainder;
 
-    var nextTrain = moment().add(minutesUntilTrain, "minutes").format("hh:mm");
+    var nextTrain = moment().add(minutesUntilTrain, "minutes").format("hh:mm a");
 
     $("#mainTable").append("<tr><td>" + childSnapshot.val().trainName + "</td><td>" + childSnapshot.val().destination + "</td><td>" + childSnapshot.val().frequency + "</td><td>" + nextTrain + "</td><td>"  + minutesUntilTrain +   "</td></tr>")
 
@@ -59,5 +52,8 @@ $("#submitButton").on("click", function() {
         firstTrainTime: firstTrainTime,
         frequency: frequency,
     });
+
+    //Clearing previously entered items from the input fields
+    $("input").val("");
 })
 
