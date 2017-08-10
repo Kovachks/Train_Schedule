@@ -1,4 +1,4 @@
-// Initialize Firebase
+  // Initialize Firebase
   var config = {
     apiKey: "AIzaSyDE2V6ic5_j6HFgpoQzd2tF_3hngEM8GXI",
     authDomain: "train-schedule-a2adb.firebaseapp.com",
@@ -9,7 +9,7 @@
   };
   firebase.initializeApp(config);
 
-//----------------------Variables-----------------
+//----------------------Universal Variables-----------------
 var database = firebase.database();
 
 
@@ -23,12 +23,26 @@ var database = firebase.database();
 
 database.ref().on("child_added", function(childSnapshot) {
     console.log(childSnapshot.val().employeeName)
-    $("#mainTable").append("<tr><td>" + childSnapshot.val().trainName + "</td><td>" + childSnapshot.val().destination + "</td><td>" + childSnapshot.val().frequency + "</td><td>" + "placeholder" + "</td><td>" + "placeholder" + "</td></tr>")
+
+    var firstTimeConverted = moment(childSnapshot.val().firstTrainTime, "hh:mm").subtract(1, "years");
+
+    var currentTime = moment();
+
+    var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+
+    var remainder = diffTime % childSnapshot.val().frequency;
+
+    var minutesUntilTrain = childSnapshot.val().frequency - remainder;
+
+    var nextTrain = moment().add(minutesUntilTrain, "minutes").format("hh:mm");
+
+    $("#mainTable").append("<tr><td>" + childSnapshot.val().trainName + "</td><td>" + childSnapshot.val().destination + "</td><td>" + childSnapshot.val().frequency + "</td><td>" + nextTrain + "</td><td>"  + minutesUntilTrain +   "</td></tr>")
+
 })
 
 //Initiated on click event for submit button to collect data
 $("#submitButton").on("click", function() {
-    alert("working")
+
     //stops the default action of an element from happening
     event.preventDefault();
 
